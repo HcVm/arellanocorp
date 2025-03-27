@@ -19,6 +19,7 @@ import com.acorporation.app.repositories.ValorCaracteristicaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,7 +102,31 @@ public class ProductoServicio {
             catalogoElectronico.ifPresent(producto::setCatalogoElectronico);
             marca.ifPresent(producto::setMarca);
 
-            // Actualizar el producto
+            // Obtener las características enviadas en la actualización
+            List<ValorCaracteristica> nuevasCaracteristicas = productoDTO.getCaracteristicas().stream()
+                    .map(ValorCaracteristicaDTO::getIdValorCaracteristica)
+                    .map(valorCaracteristicaRepositorio::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            // Eliminar características que ya no están en la lista enviada
+            List<ValorCaracteristica> caracteristicasAEliminar = new ArrayList<>();
+            for (ValorCaracteristica existente : producto.getCaracteristicas()) {
+                if (!nuevasCaracteristicas.contains(existente)) {
+                    caracteristicasAEliminar.add(existente);
+                }
+            }
+            caracteristicasAEliminar.forEach(producto::removeCaracteristica);
+
+            // Agregar nuevas características si no están en la lista actual
+            for (ValorCaracteristica nueva : nuevasCaracteristicas) {
+                if (!producto.getCaracteristicas().contains(nueva)) {
+                    producto.addCaracteristica(nueva);
+                }
+            }
+
+            // Guardar el producto con las actualizaciones
             producto = productoRepositorio.save(producto);
 
             return convertirProductoADTO(producto);
@@ -109,6 +134,8 @@ public class ProductoServicio {
             return null; // O lanzar una excepción
         }
     }
+
+
     
     public List<ProductoDTO> obtenerProductosPorCatalogo(Integer idCatalogo) {
         List<Producto> productos = productoRepositorio.findByCatalogoElectronico_IdCatalogo(idCatalogo);

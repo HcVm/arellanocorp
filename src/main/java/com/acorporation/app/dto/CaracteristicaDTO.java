@@ -7,6 +7,7 @@ public class CaracteristicaDTO {
     private Integer idCaracteristica;
     private String nombreCaracteristica;
     private List<ValorCaracteristicaDTO> valores;
+    
 	public Integer getIdCaracteristica() {
 		return idCaracteristica;
 	}

@@ -156,4 +156,11 @@ public class Producto {
         this.caracteristicas.add(valorCaracteristica);
     }
 	
+	public void removeCaracteristica(ValorCaracteristica valorCaracteristica) {
+	    if (this.caracteristicas != null) {
+	        this.caracteristicas.remove(valorCaracteristica);
+	    }
+	}
+
+	
 }
