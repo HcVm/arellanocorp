@@ -10,12 +10,17 @@ import com.acorporation.app.models.AcuerdoMarco;
 import com.acorporation.app.models.CatalogoElectronico;
 import com.acorporation.app.models.Empresa;
 import com.acorporation.app.models.Marca;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.acorporation.app.models.Producto;
 import com.acorporation.app.models.ValorCaracteristica;
 import com.acorporation.app.repositories.CatalogoElectronicoRepositorio;
 import com.acorporation.app.repositories.MarcaRepositorio;
 import com.acorporation.app.repositories.ProductoRepositorio;
 import com.acorporation.app.repositories.ValorCaracteristicaRepositorio;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +31,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductoServicio {
+	
+	private static final Logger log = LoggerFactory.getLogger(ProductoServicio.class);
 
     @Autowired
     private ProductoRepositorio productoRepositorio;
@@ -38,6 +45,7 @@ public class ProductoServicio {
 
     @Autowired
     private ValorCaracteristicaRepositorio valorCaracteristicaRepositorio;
+    
 
     public List<ProductoDTO> obtenerTodosLosProductos() {
         List<Producto> productos = productoRepositorio.findAll();
@@ -134,7 +142,51 @@ public class ProductoServicio {
             return null; // O lanzar una excepción
         }
     }
+    
+    @Transactional
+    public ProductoDTO agregarCaracteristicasAProducto(Integer idProducto, List<Integer> idsCaracteristicas) {
+        log.info("➡️ Agregando características al producto ID: {}", idProducto);
+        log.info("📌 Características recibidas: {}", idsCaracteristicas);
 
+        if (idsCaracteristicas == null || idsCaracteristicas.isEmpty()) {
+            throw new IllegalArgumentException("La lista de características no puede estar vacía.");
+        }
+
+        // Buscar el producto en la base de datos
+        Producto producto = productoRepositorio.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // Obtener las características desde los IDs proporcionados
+        List<ValorCaracteristica> nuevasCaracteristicas = idsCaracteristicas.stream()
+                .map(id -> valorCaracteristicaRepositorio.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Característica con ID " + id + " no encontrada"))
+                )
+                .collect(Collectors.toList());
+
+        // Asociar las nuevas características al producto
+        nuevasCaracteristicas.forEach(producto::addCaracteristica);
+
+        // Guardar cambios
+        productoRepositorio.saveAndFlush(producto);
+
+        log.info("✅ Características agregadas correctamente.");
+
+        return convertirProductoADTO(producto);
+    }
+    
+    @Transactional
+    public ProductoDTO eliminarCaracteristicaDeProducto(Integer idProducto, Integer idCaracteristica) {
+        Producto producto = productoRepositorio.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        ValorCaracteristica caracteristica = valorCaracteristicaRepositorio.findById(idCaracteristica)
+                .orElseThrow(() -> new RuntimeException("Característica no encontrada"));
+
+        producto.getCaracteristicas().remove(caracteristica);
+        productoRepositorio.save(producto);
+
+        return convertirProductoADTO(producto); // Aquí usas tu método de conversión
+    }
 
     
     public List<ProductoDTO> obtenerProductosPorCatalogo(Integer idCatalogo) {

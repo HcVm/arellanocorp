@@ -6,12 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/productos")
 public class ProductoControlador {
+	
+	private static final Logger log = LoggerFactory.getLogger(ProductoControlador.class);
 
     @Autowired
     private ProductoServicio productoServicio;
@@ -64,6 +69,36 @@ public class ProductoControlador {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    
+    @PutMapping("/{id}/caracteristicas")
+    public ResponseEntity<ProductoDTO> agregarCaracteristicasAProducto(
+            @PathVariable Integer id,
+            @RequestBody List<Integer> idsCaracteristicas) {
+
+        log.info("➡️ Recibiendo petición para agregar características al producto ID: {}", id);
+        log.info("📌 Características recibidas: {}", idsCaracteristicas);
+
+        ProductoDTO productoActualizado = productoServicio.agregarCaracteristicasAProducto(id, idsCaracteristicas);
+
+        return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
+    }
+
+    
+    @DeleteMapping("/{idProducto}/caracteristicas/{idCaracteristica}")
+    public ResponseEntity<ProductoDTO> eliminarCaracteristicaDeProducto(
+            @PathVariable Integer idProducto,
+            @PathVariable Integer idCaracteristica) {
+        
+        ProductoDTO productoActualizado = productoServicio.eliminarCaracteristicaDeProducto(idProducto, idCaracteristica);
+
+        if (productoActualizado != null) {
+            return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Integer id) {

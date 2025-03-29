@@ -150,11 +150,10 @@ public class Producto {
 	
 	
 	public void addCaracteristica(ValorCaracteristica valorCaracteristica) {
-        if (this.caracteristicas == null) {
-            this.caracteristicas = new ArrayList<>();
-        }
-        this.caracteristicas.add(valorCaracteristica);
-    }
+	    this.caracteristicas.add(valorCaracteristica);
+	    valorCaracteristica.getProductos().add(this); // Asegurar la bidireccionalidad
+	}
+
 	
 	public void removeCaracteristica(ValorCaracteristica valorCaracteristica) {
 	    if (this.caracteristicas != null) {
