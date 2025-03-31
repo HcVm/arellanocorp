@@ -78,7 +78,7 @@ public class UsuarioServicio {
             usuario = usuarioRepositorio.save(usuario);
             return convertirUsuarioADTO(usuario);
         } else {
-            return null; // O lanzar una excepción
+            return null;
         }
     }
     
@@ -90,7 +90,6 @@ public class UsuarioServicio {
         usuario.setActivo(!usuario.getActivo());
         usuarioRepositorio.save(usuario);
 
-        // Conversión manual a DTO
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setIdUsuario(usuario.getIdUsuario());
         usuarioDTO.setNombreUsuario(usuario.getNombreUsuario());
@@ -120,7 +119,7 @@ public class UsuarioServicio {
                     usuario.getDepartamento().getEmpresa().getIdEmpresa(),
                     usuario.getDepartamento().getEmpresa().getNombreEmpresa()
                 ) 
-                : null; // Si no hay empresa, ponemos null
+                : null;
 
             usuarioDTO.setDepartamento(new DepartamentoDTO(
                 usuario.getDepartamento().getIdDepartamento(),

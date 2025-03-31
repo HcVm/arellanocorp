@@ -21,7 +21,7 @@ public class GoogleDriveServicio {
 
     private static final String APPLICATION_NAME = "GDACORP";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String CREDENTIALS_FILE_PATH = "service-account.json"; // Ruta en classpath
+    private static final String CREDENTIALS_FILE_PATH = "service-account.json";
 
     public Drive getDriveService() throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -31,7 +31,6 @@ public class GoogleDriveServicio {
             throw new FileNotFoundException("No se encontró el archivo de credenciales: " + CREDENTIALS_FILE_PATH);
         }
 
-        // Autenticación con la cuenta de servicio
         GoogleCredentials credentials = ServiceAccountCredentials.fromStream(in)
                 .createScoped(Collections.singletonList(DriveScopes.DRIVE));
 

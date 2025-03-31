@@ -54,10 +54,8 @@ public class DocumentoServicio {
             Integer idUsuarioRecibe, 
             String comentarios) throws IOException, GeneralSecurityException {
 
-        // 1. Guardar el archivo en Google Drive
         String fileId = guardarArchivoEnDrive(archivo);
 
-        // 2. Obtener las entidades necesarias (una sola vez)
         Departamento departamentoActual = departamentoRepositorio.findById(idDepartamentoActual)
                 .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
         Usuario usuarioActual = usuarioRepositorio.findById(idUsuarioActual)
@@ -67,7 +65,6 @@ public class DocumentoServicio {
         Usuario usuarioRecibe = usuarioRepositorio.findById(idUsuarioRecibe)
                 .orElseThrow(() -> new RuntimeException("Usuario que recibe no encontrado"));
 
-        // 3. Crear y guardar el documento
         Documento documento = new Documento();
         documento.setTipoDocumento(tipoDocumento);
         documento.setNumeroDocumento(numeroDocumento);
@@ -78,7 +75,6 @@ public class DocumentoServicio {
 
         documento = documentoRepositorio.save(documento);
 
-        // 4. Registrar el movimiento usando las entidades ya obtenidas
         movimientoDocumentoServicio.registrarMovimiento(
             documento.getIdDocumento(),
             departamentoActual.getIdDepartamento(),
@@ -106,7 +102,6 @@ public class DocumentoServicio {
             dto.setUsuarioActual(convertirUsuarioADTO(documento.getUsuarioActual()));
         }
 
-        // Obtener movimientos del documento
         List<MovimientoDocumentoDTO> movimientosDTO = movimientoDocumentoServicio.obtenerMovimientosPorDocumento(documento.getIdDocumento());
         dto.setMovimientos(movimientosDTO);
 
@@ -138,7 +133,6 @@ public class DocumentoServicio {
     private String guardarArchivoEnDrive(MultipartFile archivo) throws IOException, GeneralSecurityException {
         Drive service = googleDriveServicio.getDriveService();
 
-        // Guardar el archivo temporalmente en discos
         java.io.File tempFile = java.io.File.createTempFile("upload-", archivo.getOriginalFilename());
         archivo.transferTo(tempFile);
 
@@ -151,7 +145,6 @@ public class DocumentoServicio {
                 .setFields("id")
                 .execute();
 
-        // Eliminar el archivo temporal después de la subida
         tempFile.delete();
 
         System.out.println("File ID: " + file.getId());

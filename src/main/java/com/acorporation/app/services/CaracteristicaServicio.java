@@ -58,7 +58,6 @@ public class CaracteristicaServicio {
         dto.setIdCaracteristica(caracteristica.getIdCaracteristica());
         dto.setNombreCaracteristica(caracteristica.getNombreCaracteristica());
 
-        // Convertir la lista de valores
         List<ValorCaracteristicaDTO> valoresDTO = caracteristica.getValores().stream()
                 .map(this::convertirValorADTO)
                 .collect(Collectors.toList());

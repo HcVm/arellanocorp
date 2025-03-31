@@ -70,10 +70,8 @@ public class RolServicio {
         if (rolOptional.isPresent()) {
             Rol rol = rolOptional.get();
 
-            // Eliminar permisos antiguos
             rolPermisoRepositorio.deleteByRol(rol);
 
-            // Agregar nuevos permisos
             if (actualizarRolDTO.getPermisos() != null) {
                 List<Permiso> permisos = permisoRepositorio.findAllById(actualizarRolDTO.getPermisos());
 
@@ -85,15 +83,12 @@ public class RolServicio {
                 }
             }
 
-            // Guardar cambios y devolver DTO actualizado
             rol = rolRepositorio.save(rol);
             return convertirADTO(rol);
         } else {
             return null;
         }
     }
-
-
 
 
     public void eliminarRol(Integer id) {

@@ -32,23 +32,20 @@ public class DataInitializer {
     }
 
     private void crearAdministradorSiNoExiste() {
-        // Verificar si ya existe un usuario administrador
         Optional<Usuario> adminExistente = usuarioRepositorio.findByNombreUsuario("admin");
 
         if (adminExistente.isEmpty()) {
             System.out.println("🔹 Creando usuario administrador...");
 
-            // Buscar o crear el rol ADMIN
             Rol rolAdmin = rolRepositorio.findByNombreRol("ADMINISTRADOR").orElseGet(() -> {
                 Rol nuevoRol = new Rol();
                 nuevoRol.setNombreRol("ADMINISTRADOR");
                 return rolRepositorio.save(nuevoRol);
             });
 
-            // Crear usuario administrador
             Usuario admin = new Usuario();
             admin.setNombreUsuario("admin");
-            admin.setContrasenaHash(passwordEncoder.encode("admin123")); // Encripta la contraseña
+            admin.setContrasenaHash(passwordEncoder.encode("admin123"));
             admin.setNombreCompleto("Administrador del Sistema");
             admin.setEmail("admin@example.com");
             admin.setFechaCreacion(new Date());

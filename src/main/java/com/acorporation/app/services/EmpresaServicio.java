@@ -57,7 +57,7 @@ public class EmpresaServicio {
             empresa = empresaRepositorio.save(empresa);
             return convertirEmpresaADTO(empresa);
         }
-        return null; // O lanzar una excepción
+        return null;
     }
 
     public void eliminarEmpresa(Integer id) {
@@ -75,7 +75,6 @@ public class EmpresaServicio {
         empresaDTO.setFechaCreacion(empresa.getFechaCreacion());
         empresaDTO.setActivo(empresa.getActivo());
 
-        // Convertimos la lista de departamentos a DTOs
         if (empresa.getDepartamentos() != null) {
             List<DepartamentoDTO> departamentos = empresa.getDepartamentos().stream()
                 .map(dep -> new DepartamentoDTO(dep.getIdDepartamento(), dep.getNombreDepartamento()))

@@ -75,9 +75,6 @@ public class ProductoControlador {
             @PathVariable Integer id,
             @RequestBody List<Integer> idsCaracteristicas) {
 
-        log.info("➡️ Recibiendo petición para agregar características al producto ID: {}", id);
-        log.info("📌 Características recibidas: {}", idsCaracteristicas);
-
         ProductoDTO productoActualizado = productoServicio.agregarCaracteristicasAProducto(id, idsCaracteristicas);
 
         return new ResponseEntity<>(productoActualizado, HttpStatus.OK);

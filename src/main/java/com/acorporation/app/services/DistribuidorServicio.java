@@ -53,7 +53,7 @@ public class DistribuidorServicio {
             distribuidor = distribuidorRepositorio.save(distribuidor);
             return convertirADTO(distribuidor);
         } else {
-            return null; // O lanzar una excepción
+            return null;
         }
     }
 

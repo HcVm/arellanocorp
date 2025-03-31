@@ -11,12 +11,12 @@ public class VentaDTO {
     private String codigo;
     private String entrega;
     private String recibe;
-    private DistribuidorDTO distribuidor; // Relación con DistribuidorDTO
-    private ClienteDTO cliente; // Relación con ClienteDTO
+    private DistribuidorDTO distribuidor;
+    private ClienteDTO cliente;
     private String siaf;
     private String asunto;
     private Integer cantidad;
-    private ProductoDTO producto; // Relación con ProductoDTO
+    private ProductoDTO producto;
     private String ocam;
     private String ordenFisica;
     private String numeroSiaf;

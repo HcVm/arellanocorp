@@ -82,17 +82,12 @@ public class DocumentoControlador {
             @RequestParam("comentarios") String comentarios) throws IOException, GeneralSecurityException {
 
         try {
-            // Guardar el documento
         	DocumentoDTO documentoDTO = documentoServicio.guardarDocumento(archivo, tipoDocumento, numeroDocumento, 
                     idDepartamentoActual, idUsuarioActual, 
                     idDepartamentoDestino, idUsuarioRecibe, comentarios);
 
-                    
-
-           
             Map<String, Object> response = new HashMap<>();
             response.put("documento", documentoDTO);
-
 
             return ResponseEntity.ok(response);
         } catch (IOException e) {
@@ -131,7 +126,7 @@ public class DocumentoControlador {
             System.out.println("Documento encontrado y listo para descargar.");
             return ResponseEntity.ok().headers(headers).body(contenido);
         } catch (Exception e) {
-            e.printStackTrace(); // Imprimir el error en consola
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

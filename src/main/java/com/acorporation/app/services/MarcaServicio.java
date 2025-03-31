@@ -58,7 +58,7 @@ public class MarcaServicio {
             marca = marcaRepositorio.save(marca);
             return convertirMarcaADTO(marca);
         }
-        return null; // O lanzar una excepción
+        return null;
     }
 
     public void eliminarMarca(Integer id) {
@@ -71,7 +71,6 @@ public class MarcaServicio {
         marcaDTO.setNombreMarca(marca.getNombreMarca());
         marcaDTO.setDescripcion(marca.getDescripcion());
 
-        // Mapear la empresa al DTO
         if (marca.getEmpresa() != null) {
             EmpresaDTO empresaDTO = new EmpresaDTO();
             empresaDTO.setIdEmpresa(marca.getEmpresa().getIdEmpresa());

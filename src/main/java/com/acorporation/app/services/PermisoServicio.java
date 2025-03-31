@@ -39,7 +39,6 @@ public class PermisoServicio {
         Permiso permiso = permisoRepositorio.findById(id)
                 .orElseThrow(() -> new RuntimeException("Permiso no encontrado"));
 
-        // Eliminar asociaciones en RolPermiso
         permiso.getRolPermisos().clear();
         
         permisoRepositorio.delete(permiso);

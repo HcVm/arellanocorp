@@ -42,13 +42,11 @@ public class AuthControlador {
             new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
 
-        // Obtener datos del usuario
         Usuario usuario = usuarioRepositorio.findByNombreUsuario(authRequest.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         final String jwt = jwtUtil.generateToken(usuario.getNombreUsuario());
 
-        // Devolvemos el token y los datos básicos del usuario
         return ResponseEntity.ok(new AuthResponse(jwt, usuario.getIdUsuario(), usuario.getNombreUsuario(), usuario.getRol().getNombreRol()));
     }
 }

@@ -38,7 +38,6 @@ public class DepartamentoServicio {
         Departamento departamento = new Departamento();
         departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
 
-        // Validamos que la empresa no sea null antes de buscarla
         if (departamentoDTO.getEmpresa() != null) {
             empresaRepositorio.findById(departamentoDTO.getEmpresa().getIdEmpresa())
                     .ifPresent(departamento::setEmpresa);
@@ -71,7 +70,7 @@ public class DepartamentoServicio {
         dto.setIdDepartamento(departamento.getIdDepartamento());
         dto.setNombreDepartamento(departamento.getNombreDepartamento());
         if (departamento.getEmpresa() != null) {
-            dto.setEmpresa(convertirEmpresaALiteDTO(departamento.getEmpresa())); // Evita la lista de departamentos
+            dto.setEmpresa(convertirEmpresaALiteDTO(departamento.getEmpresa()));
         }
         return dto;
     }

@@ -61,7 +61,6 @@ public class CotizacionServicio {
 
         cotizacion = cotizacionRepositorio.save(cotizacion);
 
-        // Guardar los productos de la cotización
         for (CotizacionProductoDTO cotizacionProductoDTO : cotizacionDTO.getProductos()) {
             CotizacionProducto cotizacionProducto = new CotizacionProducto();
             cotizacionProducto.setCotizacion(cotizacion);
@@ -97,7 +96,7 @@ public class CotizacionServicio {
             cotizacion = cotizacionRepositorio.save(cotizacion);
             return convertirCotizacionADTO(cotizacion);
         } else {
-            return null; // O lanzar una excepción
+            return null;
         }
     }
 
@@ -112,17 +111,14 @@ public class CotizacionServicio {
         cotizacionDTO.setEstado(cotizacion.getEstado());
         cotizacionDTO.setObservaciones(cotizacion.getObservaciones());
 
-        // Mapear el usuario al DTO
         if (cotizacion.getUsuarioVenta() != null) {
             cotizacionDTO.setUsuario(convertirUsuarioADTO(cotizacion.getUsuarioVenta()));
         }
 
-        // Mapear el cliente al DTO
         if (cotizacion.getCliente() != null) {
             cotizacionDTO.setCliente(convertirClienteADTO(cotizacion.getCliente()));
         }
 
-        // Mapear los productos de la cotización al DTO
         if (cotizacion.getProductos() != null) {
             cotizacionDTO.setProductos(cotizacion.getProductos().stream()
                     .map(this::convertirCotizacionProductoADTO)
@@ -159,7 +155,6 @@ public class CotizacionServicio {
         cotizacionProductoDTO.setDescripcion(cotizacionProducto.getDescripcion());
         cotizacionProductoDTO.setUnidad(cotizacionProducto.getUnidad());
 
-        // Mapear el producto al DTO
         if (cotizacionProducto.getProducto() != null) {
             cotizacionProductoDTO.setProducto(convertirProductoADTO(cotizacionProducto.getProducto()));
         }
@@ -177,13 +172,10 @@ public class CotizacionServicio {
         productoDTO.setDescripcionProducto(producto.getDescripcionProducto());
         productoDTO.setCodigoProducto(producto.getCodigoProducto());
         productoDTO.setPrecioPlataforma(producto.getPrecioPlataforma());
-
-        // Mapear la marca si existe
         if (producto.getMarca() != null) {
             productoDTO.setMarca(convertirMarcaADTO(producto.getMarca()));
         }
 
-        // ✅ Mapear las características del producto
         if (producto.getCaracteristicas() != null) {
             List<ValorCaracteristicaDTO> caracteristicasDTO = producto.getCaracteristicas().stream()
                 .map(this::convertirValorCaracteristicaADTO)

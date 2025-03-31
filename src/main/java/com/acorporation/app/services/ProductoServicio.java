@@ -68,24 +68,20 @@ public class ProductoServicio {
         producto.setEstado(productoDTO.getEstado());
         producto.setPrecioPlataforma(productoDTO.getPrecioPlataforma());
 
-        // Obtener el catálogo electrónico y la marca
         Optional<CatalogoElectronico> catalogoElectronico = catalogoElectronicoRepositorio.findById(productoDTO.getCatalogoElectronico().getIdCatalogo());
         Optional<Marca> marca = marcaRepositorio.findById(productoDTO.getMarca().getIdMarca());
 
         catalogoElectronico.ifPresent(producto::setCatalogoElectronico);
         marca.ifPresent(producto::setMarca);
 
-        // Guardar el producto
         producto = productoRepositorio.save(producto);
 
-        // Guardar las características del producto
         List<ValorCaracteristica> caracteristicas = productoDTO.getCaracteristicas().stream()
-                .map(ValorCaracteristicaDTO::getIdValorCaracteristica) // Obtener el ID de ValorCaracteristicaDTO
-                .map(valorCaracteristicaRepositorio::findById) // Buscar ValorCaracteristica por ID
+                .map(ValorCaracteristicaDTO::getIdValorCaracteristica)
+                .map(valorCaracteristicaRepositorio::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-        // Agregar las características al producto usando el método addCaracteristica (que debes crear en la entidad Producto)
         caracteristicas.forEach(producto::addCaracteristica);
         productoRepositorio.save(producto);
 
@@ -103,14 +99,12 @@ public class ProductoServicio {
             producto.setEstado(productoDTO.getEstado());
             producto.setPrecioPlataforma(productoDTO.getPrecioPlataforma());
 
-            // Obtener el catálogo electrónico y la marca
             Optional<CatalogoElectronico> catalogoElectronico = catalogoElectronicoRepositorio.findById(productoDTO.getCatalogoElectronico().getIdCatalogo());
             Optional<Marca> marca = marcaRepositorio.findById(productoDTO.getMarca().getIdMarca());
 
             catalogoElectronico.ifPresent(producto::setCatalogoElectronico);
             marca.ifPresent(producto::setMarca);
 
-            // Obtener las características enviadas en la actualización
             List<ValorCaracteristica> nuevasCaracteristicas = productoDTO.getCaracteristicas().stream()
                     .map(ValorCaracteristicaDTO::getIdValorCaracteristica)
                     .map(valorCaracteristicaRepositorio::findById)
@@ -118,7 +112,6 @@ public class ProductoServicio {
                     .map(Optional::get)
                     .collect(Collectors.toList());
 
-            // Eliminar características que ya no están en la lista enviada
             List<ValorCaracteristica> caracteristicasAEliminar = new ArrayList<>();
             for (ValorCaracteristica existente : producto.getCaracteristicas()) {
                 if (!nuevasCaracteristicas.contains(existente)) {
@@ -127,19 +120,17 @@ public class ProductoServicio {
             }
             caracteristicasAEliminar.forEach(producto::removeCaracteristica);
 
-            // Agregar nuevas características si no están en la lista actual
             for (ValorCaracteristica nueva : nuevasCaracteristicas) {
                 if (!producto.getCaracteristicas().contains(nueva)) {
                     producto.addCaracteristica(nueva);
                 }
             }
 
-            // Guardar el producto con las actualizaciones
             producto = productoRepositorio.save(producto);
 
             return convertirProductoADTO(producto);
         } else {
-            return null; // O lanzar una excepción
+            return null;
         }
     }
     
@@ -152,24 +143,18 @@ public class ProductoServicio {
             throw new IllegalArgumentException("La lista de características no puede estar vacía.");
         }
 
-        // Buscar el producto en la base de datos
         Producto producto = productoRepositorio.findById(idProducto)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-        // Obtener las características desde los IDs proporcionados
         List<ValorCaracteristica> nuevasCaracteristicas = idsCaracteristicas.stream()
                 .map(id -> valorCaracteristicaRepositorio.findById(id)
                         .orElseThrow(() -> new RuntimeException("Característica con ID " + id + " no encontrada"))
                 )
                 .collect(Collectors.toList());
 
-        // Asociar las nuevas características al producto
         nuevasCaracteristicas.forEach(producto::addCaracteristica);
 
-        // Guardar cambios
         productoRepositorio.saveAndFlush(producto);
-
-        log.info("✅ Características agregadas correctamente.");
 
         return convertirProductoADTO(producto);
     }
@@ -185,7 +170,7 @@ public class ProductoServicio {
         producto.getCaracteristicas().remove(caracteristica);
         productoRepositorio.save(producto);
 
-        return convertirProductoADTO(producto); // Aquí usas tu método de conversión
+        return convertirProductoADTO(producto);
     }
 
     
@@ -228,21 +213,19 @@ public class ProductoServicio {
         productoDTO.setCodigoProducto(producto.getCodigoProducto());
         productoDTO.setNombreProducto(producto.getNombreProducto());
         productoDTO.setDescripcionProducto(producto.getDescripcionProducto());
-        // Mapear el catálogo electrónico al DTO
+
         productoDTO.setCatalogoElectronico(convertirCatalogoElectronicoADTO(producto.getCatalogoElectronico()));
         productoDTO.setStock(producto.getStock());
         productoDTO.setEstado(producto.getEstado());
         productoDTO.setPrecioPlataforma(producto.getPrecioPlataforma());
-        // Mapear la marca al DTO
+
         productoDTO.setMarca(convertirMarcaADTO(producto.getMarca()));
-        // Mapear las características al DTO
+
         productoDTO.setCaracteristicas(producto.getCaracteristicas().stream()
                 .map(this::convertirValorCaracteristicaADTO)
                 .collect(Collectors.toList()));
         return productoDTO;
     }
-    
-    
 
     private CatalogoElectronicoDTO convertirCatalogoElectronicoADTO(CatalogoElectronico catalogoElectronico) {
         CatalogoElectronicoDTO catalogoElectronicoDTO = new CatalogoElectronicoDTO();
@@ -289,7 +272,7 @@ public class ProductoServicio {
     private ValorCaracteristicaDTO convertirValorCaracteristicaADTO(ValorCaracteristica valorCaracteristica) {
         ValorCaracteristicaDTO valorCaracteristicaDTO = new ValorCaracteristicaDTO();
         valorCaracteristicaDTO.setIdValorCaracteristica(valorCaracteristica.getIdValorCaracteristica());
-        valorCaracteristicaDTO.setNombreCaracteristica(valorCaracteristica.getCaracteristica().getNombreCaracteristica()); // Obtener el nombre de la característica
+        valorCaracteristicaDTO.setNombreCaracteristica(valorCaracteristica.getCaracteristica().getNombreCaracteristica());
         valorCaracteristicaDTO.setValor(valorCaracteristica.getValor());
         return valorCaracteristicaDTO;
     }

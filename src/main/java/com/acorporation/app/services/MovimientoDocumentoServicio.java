@@ -42,7 +42,6 @@ public class MovimientoDocumentoServicio {
                                                    Integer idUsuarioEnvia, 
                                                    Integer idUsuarioRecibe, 
                                                    String comentarios) {
-        // Verificar que los datos existen en la base de datos
         Documento documento = documentoRepositorio.findById(idDocumento)
                 .orElseThrow(() -> new RuntimeException("Documento no encontrado"));
 
@@ -58,7 +57,6 @@ public class MovimientoDocumentoServicio {
         Usuario usuarioRecibe = usuarioRepositorio.findById(idUsuarioRecibe)
                 .orElseThrow(() -> new RuntimeException("Usuario que recibe no encontrado"));
 
-        // Crear movimiento
         MovimientoDocumento movimiento = new MovimientoDocumento();
         movimiento.setDocumento(documento);
         movimiento.setDepartamentoOrigen(departamentoOrigen);
@@ -68,7 +66,6 @@ public class MovimientoDocumentoServicio {
         movimiento.setFechaMovimiento(new Date());
         movimiento.setComentarios(comentarios);
 
-        // Guardar en base de datos
         return movimientoDocumentoRepositorio.save(movimiento);
     }
 
@@ -77,11 +74,10 @@ public class MovimientoDocumentoServicio {
         return movimientos.stream().map(this::convertirMovimientoADTO).collect(Collectors.toList());
     }
 
-    // Agregar este método en MovimientoDocumentoServicio para convertir la entidad a DTO
     private MovimientoDocumentoDTO convertirMovimientoADTO(MovimientoDocumento movimiento) {
         return new MovimientoDocumentoDTO(
             movimiento.getIdMovimiento(),
-            new DocumentoDTO(movimiento.getDocumento().getIdDocumento()), // O ajusta según sea necesario
+            new DocumentoDTO(movimiento.getDocumento().getIdDocumento()),
             new DepartamentoLiteDTO(movimiento.getDepartamentoOrigen().getIdDepartamento(), movimiento.getDepartamentoOrigen().getNombreDepartamento()),
             new DepartamentoLiteDTO(movimiento.getDepartamentoDestino().getIdDepartamento(), movimiento.getDepartamentoDestino().getNombreDepartamento()),
             new UsuarioLiteDTO(movimiento.getUsuarioEnvia().getIdUsuario(), movimiento.getUsuarioEnvia().getNombreUsuario()),

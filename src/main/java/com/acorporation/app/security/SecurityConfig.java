@@ -30,14 +30,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
         	.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable()) // Deshabilita CSRF si estás usando Postman
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login").permitAll() // Permitir login sin autenticación
+                .requestMatchers("/auth/login").permitAll()
                 .requestMatchers("/usuarios/**", "/documentos/**").hasRole("ADMINISTRADOR")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider()) // Asigna el provider
+            .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -47,7 +47,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Permitir el frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
@@ -76,7 +76,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UsuarioDetailsService(); // Asegúrate de usar tu servicio de usuarios
+        return new UsuarioDetailsService();
     }
 
     @Bean

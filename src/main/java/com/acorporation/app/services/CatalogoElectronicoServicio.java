@@ -37,7 +37,6 @@ public class CatalogoElectronicoServicio {
     public CatalogoElectronicoDTO crearCatalogoElectronico(CatalogoElectronicoDTO catalogoDTO) {
         CatalogoElectronico catalogo = convertirADocumento(catalogoDTO);
         
-        // Guardar el catálogo en la base de datos
         catalogo = catalogoElectronicoRepositorio.save(catalogo);
         
         return convertirACatalogoElectronicoDTO(catalogo);
@@ -54,12 +53,12 @@ public class CatalogoElectronicoServicio {
         Optional<CatalogoElectronico> catalogoOptional = catalogoElectronicoRepositorio.findById(id);
         if (catalogoOptional.isPresent()) {
             CatalogoElectronico catalogo = convertirADocumento(catalogoDTO);
-            catalogo.setIdCatalogo(id); // Mantener el mismo ID
+            catalogo.setIdCatalogo(id);
             
             catalogo = catalogoElectronicoRepositorio.save(catalogo);
             return convertirACatalogoElectronicoDTO(catalogo);
         }
-        return null; // Opcional: lanzar una excepción si no se encuentra
+        return null;
     }
 
     public void eliminarCatalogoElectronico(Integer id) {
